@@ -5,8 +5,8 @@ impl crate::Planet {
     pub fn render(
         &mut self,
         commands: &mut Commands,
-        mut meshes: ResMut<Assets<Mesh>>,
-        mut materials: ResMut<Assets<StandardMaterial>>,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
     ) {
         self.mesh.scale_by(Vec3::splat(100.0));
 

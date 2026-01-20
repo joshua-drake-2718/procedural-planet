@@ -28,6 +28,7 @@ fn main() {
         .insert_resource(ClearColor(Color::BLACK))
         .add_systems(Startup, setup)
         .add_systems(Update, (
+            reset,
             move_camera,
             move_sun,
         ))
@@ -41,8 +42,8 @@ fn main() {
 fn setup(
     mut commands: Commands,
     mut ambient_light: ResMut<AmbientLight>,
-    meshes: ResMut<Assets<Mesh>>,
-    materials: ResMut<Assets<StandardMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     ambient_light.brightness = AMBIENT_BRIGHTNESS;
 
@@ -68,12 +69,35 @@ fn setup(
         ).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 
-    let mut planet = Planet::new(NUM_POINTS);
-    planet.render(&mut commands, meshes, materials);
-    commands.insert_resource(planet);
+    add_planet(&mut commands, &mut meshes, &mut materials);
 
     commands.insert_resource(ViewMode::None);
     commands.insert_resource(CameraLock(true));
+}
+
+fn add_planet(
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<StandardMaterial>,
+) {
+    let mut planet = Planet::new(NUM_POINTS);
+    planet.render(commands, meshes, materials);
+    commands.insert_resource(planet);
+}
+
+fn reset(
+    mut commands: Commands,
+    entities: Query<Entity, With<Mesh3d>>,
+    keys: Res<ButtonInput<KeyCode>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    if keys.just_pressed(KeyCode::Backslash) {
+        for entity in entities {
+            commands.entity(entity).despawn();
+        }
+        add_planet(&mut commands, &mut meshes, &mut materials);
+    }
 }
 
 fn move_camera(
