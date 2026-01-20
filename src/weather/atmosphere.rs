@@ -4,6 +4,9 @@ use crate::Terrain;
 use crate::weather::fluid::{currents, fluid, velocities};
 use crate::weather::temperatures::temperature;
 
+const OCEAN_TEMPERATURE: f32 = 0.5;
+const BASE_PRESSURE: f32 = 0.2;
+
 pub fn atmosphere(
     points: &Vec<Vec3>,
     half_edges: &Vec<usize>,
@@ -16,10 +19,10 @@ pub fn atmosphere(
     let weights = vec![1.0].repeat(terrain.len());
     let starting_velocities = vec![Vec3::ZERO].repeat(terrain.len());
     let starting_pressures = (0..points.len()).map(|p| {
-        let temperature = temperatures[p] - 0.5 * temperature(points[p].y);
+        let temperature = temperatures[p] - OCEAN_TEMPERATURE * temperature(points[p].y);
         let ideal = pressure(points[p].y);
         if ideal.signum() == temperature.signum() {
-            0.1 * ideal
+            BASE_PRESSURE * ideal
         } else {
             ideal * temperature.abs()
         }

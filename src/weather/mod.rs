@@ -14,7 +14,7 @@ mod ocean;
 pub mod temperatures;
 mod precipitation;
 
-const OCEAN_ITERATIONS: f32 = 5.0;
+const OCEAN_ITERATIONS: f32 = 10.0;
 const ATMOSPHERE_ITERATIONS: f32 = 1.0;
 const OCEAN_ADVECTION: f32 = 0.3;
 const ATMOSPHERE_ADVECTION: f32 = 0.2;
