@@ -15,7 +15,7 @@ const NOISE_DETAIL: f64 = 2.0;
 const NOISE_HEIGHT: f32 = 0.01;
 
 const CONVERGENT_HEIGHT: f32 = 0.2;
-const DIVERGENT_DEPTH: f32 = 0.05;
+const DIVERGENT_HEIGHT: f32 = 0.05;
 const OCEAN_STRESS: f32 = 0.5;
 
 pub fn tectonics(
@@ -94,6 +94,11 @@ pub fn tectonics(
                 let distance = points[*p] - points[*q];
                 let mut added_stress = distance.dot(velocity_2 - velocity_1);
                 if !continental(plate) { added_stress *= OCEAN_STRESS }
+                if added_stress > 0.0 {
+                    added_stress *= CONVERGENT_HEIGHT;
+                } else {
+                    added_stress *= DIVERGENT_HEIGHT;
+                }
                 stress[*p] += added_stress;
                 stress[*q] += added_stress;
             }
@@ -118,11 +123,7 @@ pub fn tectonics(
             heights[p] += NOISE_HEIGHT * noise;
 
             let stress = stress[p];
-            if stress > 0.0 {
-                heights[p] += CONVERGENT_HEIGHT * stress;
-            } else {
-                heights[p] += DIVERGENT_DEPTH * stress;
-            }
+            heights[p] += stress;
 
             if continental(i) {
                 let distance = plate_centre.distance_squared(points[p]);
