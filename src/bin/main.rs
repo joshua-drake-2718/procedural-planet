@@ -20,7 +20,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 resizable: false,
-                // mode: bevy::window::WindowMode::BorderlessFullscreen(MonitorSelection::Primary),
+                mode: bevy::window::WindowMode::BorderlessFullscreen(MonitorSelection::Primary),
                 ..default()
             }),
             ..default()
