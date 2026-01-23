@@ -1,7 +1,7 @@
 use crate::terrain::Terrain;
 use crate::weather::advection::advection;
 
-const DECAY: f32 = 500.0;
+const DECAY: f32 = 750.0;
 const EVAPORATION: f32 = 0.3;
 
 pub fn precipitation(

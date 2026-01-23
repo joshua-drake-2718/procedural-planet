@@ -7,8 +7,7 @@ const ICE_TEMPERATURE: f32 = -0.8;
 const SNOW_TEMPERATURE: f32 = -0.6;
 const TUNDRA_TEMPERATURE: f32 = -0.2;
 
-const ARID_PRECIPITATION: f32 = 0.2;
-const DESERT_TEMPERATURE: f32 = 0.1;
+const ARID_PRECIPITATION: f32 = 0.1;
 
 const TROPICAL_TEMPERATURE: f32 = 0.3;
 const RAINFOREST_PRECIPITATION: f32 = 0.6;
@@ -75,19 +74,11 @@ fn land(temperature: f32, precipitation: f32) -> Biome {
     } else if temperature < TUNDRA_TEMPERATURE {
         Biome::Tundra
     } else if precipitation < ARID_PRECIPITATION {
-        arid(temperature)
+        Biome::Desert
     } else if temperature > TROPICAL_TEMPERATURE {
         tropical(precipitation)
     } else {
         temperate(precipitation)
-    }
-}
-
-fn arid(temperature: f32) -> Biome {
-    if temperature < DESERT_TEMPERATURE {
-        Biome::Plains
-    } else {
-        Biome::Desert
     }
 }
 
