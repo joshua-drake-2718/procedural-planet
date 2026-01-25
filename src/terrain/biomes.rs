@@ -55,7 +55,7 @@ pub fn biomes(
 ) -> Vec<Biome> {
     (0..points.len()).map(|p| {
         let temperature = temperature(points[p].y);
-        let ocean_temperature = (temperature + 2.0 * ocean_temperatures[p]) / 3.0;
+        let ocean_temperature = (temperature + 2.0 * ocean_temperatures[p] + atmospheric_temperatures[p]) / 4.0;
         let land_temperature = (temperature + 2.0 * atmospheric_temperatures[p]) / 3.0;
         let precipitation = precipitation[p];
 

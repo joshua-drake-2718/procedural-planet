@@ -5,18 +5,19 @@ use rand::random_range;
 
 const NUM_PLATES: usize = 20;
 
-pub const OCEAN_DEPTH: f32 = 0.03;
+pub const OCEAN_HEIGHT: f32 = -0.03;
+const ISLAND_HEIGHT: f32 = -0.01;
 
 const MAX_HEIGHT: f32 = 0.09;
 const CONTINENT_HEIGHT: f32 = 0.01;
-const CONTINENT_SLOPE: f32 = 0.04;
+const CONTINENT_SLOPE: f32 = 0.05;
 
-const NOISE_DETAIL: f64 = 2.0;
-const NOISE_HEIGHT: f32 = 0.01;
+const NOISE_DETAIL: f64 = 1.0;
+const NOISE_HEIGHT: f32 = 0.02;
 
 const CONVERGENT_STRESS: f32 = 0.2;
 const DIVERGENT_STRESS: f32 = 0.05;
-const OCEAN_STRESS: f32 = 0.5;
+const OCEAN_STRESS: f32 = 0.4;
 
 pub fn tectonics(
     points: &Vec<Vec3>, 
@@ -107,12 +108,11 @@ pub fn tectonics(
 
     let perlin = Perlin::new(0);
     let mut heights = vec![0.0].repeat(points.len());
-    for (i, plate) in plates.iter().enumerate() {
-        if plate.is_empty() { continue }
+    for plate in 0..plates.len() {
+        if plates[plate].is_empty() { continue }
+        let plate_centre = points[plates[plate][0]];
 
-        let plate_centre = points[plate[0]];
-
-        for p in plate {
+        for p in &plates[plate] {
             let noise_point = [
                 NOISE_DETAIL * points[*p].x as f64,
                 NOISE_DETAIL * points[*p].y as f64,
@@ -125,11 +125,14 @@ pub fn tectonics(
             let stress = stress[*p];
             heights[*p] += stress;
 
-            if continental(i) {
+            if continental(plate) {
                 let distance = plate_centre.distance_squared(points[*p]);
                 heights[*p] += CONTINENT_HEIGHT - CONTINENT_SLOPE * distance;
             } else {
-                heights[*p] -= OCEAN_DEPTH;
+                heights[*p] += OCEAN_HEIGHT;
+                if heights[*p] < ISLAND_HEIGHT {
+                    heights[*p] = OCEAN_HEIGHT;
+                }
             }
 
             if heights[*p] > MAX_HEIGHT {
