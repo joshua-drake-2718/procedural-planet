@@ -69,6 +69,9 @@ pub fn tectonics(
         }
     }
 
+    let mut plates: Vec<Vec<usize>> = plates.into_iter().filter(|plate | {
+        !plate.is_empty()
+    }).collect();
     plates.sort_by(|a, b| {
         b.len().cmp(&a.len())
     });
@@ -76,12 +79,10 @@ pub fn tectonics(
     let mut polar_plate = 0;
     let mut pole_latitude = 0.0;
     for plate in 0..plates.len() {
-        for p in &plates[plate] {
-            let latitude = points[*p].y.abs();
-            if latitude > pole_latitude {
-                polar_plate = plate;
-                pole_latitude = latitude;
-            }
+        let latitude = points[plates[plate][0]].y.abs();
+        if latitude > pole_latitude {
+            polar_plate = plate;
+            pole_latitude = latitude;
         }
     }
     plates.swap(2, polar_plate);
@@ -109,7 +110,6 @@ pub fn tectonics(
     let perlin = Perlin::new(0);
     let mut heights = vec![0.0].repeat(points.len());
     for plate in 0..plates.len() {
-        if plates[plate].is_empty() { continue }
         let plate_centre = points[plates[plate][0]];
 
         for p in &plates[plate] {

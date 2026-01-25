@@ -3,7 +3,7 @@ use bevy::math::Vec3;
 use crate::terrain::Terrain;
 use crate::weather::temperatures::temperature;
 
-const ICE_TEMPERATURE: f32 = -0.8;
+const ICE_TEMPERATURE: f32 = -0.7;
 const SNOW_TEMPERATURE: f32 = -0.6;
 const TUNDRA_TEMPERATURE: f32 = -0.2;
 
