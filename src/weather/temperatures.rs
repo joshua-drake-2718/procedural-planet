@@ -3,7 +3,7 @@ use bevy::math::Vec3;
 use crate::terrain::Terrain;
 use crate::weather::advection::advection;
 
-const LAND_TEMPERATURE: f32 = 0.5;
+const LAND_TEMPERATURE: f32 = 0.2;
 const LAND_VARIATION: f32 = 0.5;
 
 pub fn temperature(
