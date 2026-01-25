@@ -28,7 +28,7 @@ pub fn tectonics(
     let mut rotations = vec![];
 
     for point in random_units(NUM_PLATES) {
-        let i = (0..points.len())
+        let p = (0..points.len())
             .min_by(|a, b| {
                 point
                     .distance_squared(points[*a])
@@ -36,7 +36,7 @@ pub fn tectonics(
             })
             .unwrap();
         plates.push(vec![]);
-        queue.push((queue.len(), i));
+        queue.push((queue.len(), p));
 
         let color = [
             random_range(0.0..1.0),
@@ -107,33 +107,33 @@ pub fn tectonics(
 
     let perlin = Perlin::new(0);
     let mut heights = vec![0.0].repeat(points.len());
-    for (i, plate) in plates.drain(..).enumerate() {
+    for (i, plate) in plates.iter().enumerate() {
         if plate.is_empty() { continue }
 
         let plate_centre = points[plate[0]];
 
         for p in plate {
             let noise_point = [
-                NOISE_DETAIL * points[p].x as f64,
-                NOISE_DETAIL * points[p].y as f64,
-                NOISE_DETAIL * points[p].z as f64,
+                NOISE_DETAIL * points[*p].x as f64,
+                NOISE_DETAIL * points[*p].y as f64,
+                NOISE_DETAIL * points[*p].z as f64,
             ];
             let noise = perlin.get(noise_point) as f32;
             
-            heights[p] += NOISE_HEIGHT * noise;
+            heights[*p] += NOISE_HEIGHT * noise;
 
-            let stress = stress[p];
-            heights[p] += stress;
+            let stress = stress[*p];
+            heights[*p] += stress;
 
             if continental(i) {
-                let distance = plate_centre.distance_squared(points[p]);
-                heights[p] += CONTINENT_HEIGHT - CONTINENT_SLOPE * distance;
+                let distance = plate_centre.distance_squared(points[*p]);
+                heights[*p] += CONTINENT_HEIGHT - CONTINENT_SLOPE * distance;
             } else {
-                heights[p] -= OCEAN_DEPTH;
+                heights[*p] -= OCEAN_DEPTH;
             }
 
-            if heights[p] > MAX_HEIGHT {
-                heights[p] = MAX_HEIGHT;
+            if heights[*p] > MAX_HEIGHT {
+                heights[*p] = MAX_HEIGHT;
             }
         }
     }
